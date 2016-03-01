@@ -1,0 +1,5 @@
+conf_*.mk
+.*.swp
+obj/
+bin/
+
