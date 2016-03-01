@@ -2,6 +2,10 @@
 #include <utils/jsonser.h>
 #include <utils/logger.h>
 #include <stdlib.h>
+#include <math.h>
+
+#define PI 3.14159265358979323846
+#define H 6.62607004E-34
 
 static Logger logger = LOGGER("Tests.Test_2");
 
@@ -26,6 +30,8 @@ static char *
 serializeExample(SerializerFactory factory, Cred *cred)
 {
     ISerializer *serializer = factory();
+    char *tmpval;
+
     serializer->StartObject(serializer, "test_2");
 
     serializer->StartProperty(serializer, "cred");
@@ -52,6 +58,41 @@ serializeExample(SerializerFactory factory, Cred *cred)
     serializer->StartProperty(serializer, "emptyobject");
     serializer->StartObject(serializer, 0);
     serializer->EndObject(serializer);
+    serializer->EndProperty(serializer);
+
+    serializer->StartProperty(serializer, "math");
+    serializer->StartList(serializer, 0);
+    serializer->StartObject(serializer, 0);
+    serializer->StartProperty(serializer, "name");
+    serializer->WriteValue(serializer, "pi");
+    serializer->EndProperty(serializer);
+    serializer->StartProperty(serializer, "value");
+    tmpval = serializer->FormatFloat(serializer, PI);
+    serializer->WriteValue(serializer, tmpval);
+    free(tmpval);
+    serializer->EndProperty(serializer);
+    serializer->EndObject(serializer);
+    serializer->StartObject(serializer, 0);
+    serializer->StartProperty(serializer, "name");
+    serializer->WriteValue(serializer, "sqrt(2)");
+    serializer->EndProperty(serializer);
+    serializer->StartProperty(serializer, "value");
+    tmpval = serializer->FormatFloat(serializer, sqrt(2));
+    serializer->WriteValue(serializer, tmpval);
+    free(tmpval);
+    serializer->EndProperty(serializer);
+    serializer->EndObject(serializer);
+    serializer->StartObject(serializer, 0);
+    serializer->StartProperty(serializer, "name");
+    serializer->WriteValue(serializer, "h");
+    serializer->EndProperty(serializer);
+    serializer->StartProperty(serializer, "value");
+    tmpval = serializer->FormatFloat(serializer, H);
+    serializer->WriteValue(serializer, tmpval);
+    free(tmpval);
+    serializer->EndProperty(serializer);
+    serializer->EndObject(serializer);
+    serializer->EndList(serializer);
     serializer->EndProperty(serializer);
     
     serializer->EndObject(serializer);

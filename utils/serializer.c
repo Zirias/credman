@@ -26,7 +26,7 @@ FormatFloat(ISerializer *self, double val)
     (void)self;
 
     char buf[24];
-    snprintf(buf, 24, "%.20g", val);
+    snprintf(buf, 24, "%.17g", val);
     return copyString(buf);
 }
 
