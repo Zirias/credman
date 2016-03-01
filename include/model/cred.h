@@ -1,6 +1,7 @@
 #ifndef CREDMODEL_CRED_H
 #define CREDMODEL_CRED_H
 
+#include <utils/serializer.h>
 #include <time.h>
 
 typedef struct Cred Cred;
@@ -18,5 +19,7 @@ time_t Cred_Changed(const Cred *self);
 void Cred_SetUsername(Cred *self, const char *username);
 void Cred_SetPassword(Cred *self, const char *password);
 void Cred_SetDescription(Cred *self, const char *description);
+
+char *Cred_Serialize(const Cred *self, SerializerFactory serializerFactory);
 
 #endif

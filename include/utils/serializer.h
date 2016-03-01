@@ -23,12 +23,14 @@ struct ISerializer
     void (*StartObject)(ISerializer *self, const char *name);
     void (*EndObject)(ISerializer *self);
 
-    const char *(*ToString)(ISerializer *self);
+    char *(*CreateResult)(ISerializer *self);
 
     void (*Destroy)(ISerializer *self);
 
     ISerializer *base;
 };
+
+typedef ISerializer *(*SerializerFactory)(void);
 
 void Serializer_DeriveInterface(ISerializer *from, ISerializer *to);
 

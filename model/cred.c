@@ -98,3 +98,36 @@ Cred_SetDescription(Cred *self, const char *description)
     self->description = copyString(description);
 }
 
+char *
+Cred_Serialize(const Cred *self, SerializerFactory serializerFactory)
+{
+    ISerializer *serializer = serializerFactory();
+    char *val;
+
+    serializer->StartObject(serializer, 0);
+
+    serializer->StartProperty(serializer, "Username");
+    serializer->WriteValue(serializer, self->username);
+    serializer->EndProperty(serializer);
+
+    serializer->StartProperty(serializer, "Password");
+    serializer->WriteValue(serializer, self->password);
+    serializer->EndProperty(serializer);
+
+    serializer->StartProperty(serializer, "Created");
+    val = serializer->FormatDateTime(serializer, self->created);
+    serializer->WriteValue(serializer, val);
+    free(val);
+    serializer->EndProperty(serializer);
+
+    serializer->StartProperty(serializer, "Changed");
+    val = serializer->FormatDateTime(serializer, self->changed);
+    serializer->WriteValue(serializer, val);
+    free(val);
+    serializer->EndProperty(serializer);
+
+    serializer->EndObject(serializer);
+
+    return serializer->CreateResult(serializer);
+}
+
