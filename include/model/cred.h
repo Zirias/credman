@@ -20,6 +20,7 @@ void Cred_SetUsername(Cred *self, const char *username);
 void Cred_SetPassword(Cred *self, const char *password);
 void Cred_SetDescription(Cred *self, const char *description);
 
+void Cred_SerializeTo(const Cred *self, ISerializer *serializer);
 char *Cred_Serialize(const Cred *self, SerializerFactory serializerFactory);
 
 #endif

@@ -36,7 +36,7 @@ endif
 CLEAN += $$($(T)_OBJS:.o=.d) $$($(T)_OBJS)
 
 ifneq ($$(strip $$($(T)_OBJDIR)),$$(strip $$($(T)_SRCDIR)))
-$$($(T)_OBJDIR):
+$$($(T)_OBJDIR)::
 	$$(VMD)
 	$$(VR)$$(MDP) $$(addprefix $$($(T)_OBJDIR)$$(PSEP), \
 	    $$(dir $$($(T)_MODULES))) 

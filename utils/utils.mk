@@ -2,7 +2,7 @@ P:=utils
 
 T:=cmutils
 cmutils_SRCDIR:= $(P)
-cmutils_MODULES:= common int logger stringbuilder serializer
+cmutils_MODULES:= common int logger stringbuilder serializer jsonser
 cmutils_PLATFORMMODULES:= common
 cmutils_V_MAJ:= 0
 cmutils_V_MIN:= 0

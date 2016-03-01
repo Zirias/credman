@@ -32,8 +32,6 @@ struct ISerializer
 
 typedef ISerializer *(*SerializerFactory)(void);
 
-void Serializer_DeriveInterface(ISerializer *from, ISerializer *to);
-
 typedef struct BaseSerializer BaseSerializer;
 
 BaseSerializer *BaseSerializer_Create(void);

@@ -10,3 +10,13 @@ test_1_BUILDWITH:= tests
 test_t_STRIPWITH:=
 $(eval $(BINRULES))
 
+T:=test_2
+test_2_SRCDIR:= $(P)
+test_2_MODULES:= test_2
+test_2_LDFLAGS:= -L$(LIBDIR) -static
+test_2_LIBS:= -lcmmodel -lcmutils
+test_2_DEPS:= $(LIBDIR)$(PSEP)libcmmodel.a $(LIBDIR)$(PSEP)libcmutils.a
+test_2_BUILDWITH:= tests
+test_2_STRIPWITH:=
+$(eval $(BINRULES))
+

@@ -12,13 +12,6 @@ struct BaseSerializer
     StringBuilder *builder;
 };
 
-void
-Serializer_DeriveInterface(ISerializer *from, ISerializer *to)
-{
-    memcpy(to, from, sizeof(ISerializer));
-    to->base = from;
-}
-
 static char *
 FormatInt(ISerializer *self, int val)
 {
@@ -49,6 +42,13 @@ FormatDateTime(ISerializer *self, time_t val)
     return result;
 }
 
+static char *
+CreateResult(ISerializer *self)
+{
+    BaseSerializer *myself = (BaseSerializer *)self;
+    return copyString(StringBuilder_AsString(myself->builder));
+}
+
 static void
 Destroy(ISerializer *self)
 {
@@ -65,8 +65,15 @@ BaseSerializer_Create(void)
     self->impl.FormatInt = FormatInt;
     self->impl.FormatFloat = FormatFloat;
     self->impl.FormatDateTime = FormatDateTime;
+    self->impl.CreateResult = CreateResult;
     self->impl.Destroy = Destroy;
     self->builder = StringBuilder_Create();
     return self;
+}
+
+StringBuilder *
+BaseSerializer_Builder(BaseSerializer *self)
+{
+    return self->builder;
 }
 
