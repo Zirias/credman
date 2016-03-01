@@ -57,6 +57,9 @@ VTAGS:= $(VTAGS)]
 
 CLEAN+= $(CONFIG)
 
+AR?=ar
+STRIP?=strip
+
 OBJBASEDIR?=obj
 BINBASEDIR?=bin
 LIBBASEDIR?=lib

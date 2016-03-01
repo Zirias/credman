@@ -1,5 +1,7 @@
 conf_*.mk
 .*.swp
+.*.pyc
 obj/
 bin/
+lib/
 

@@ -1,6 +1,5 @@
-#include "int.h"
-
-#include "common.h"
+#include <utils/int.h>
+#include <utils/common.h>
 
 static char *int_FormatToStringRecursive(
 	unsigned int base, int quotient, size_t position, char **str);

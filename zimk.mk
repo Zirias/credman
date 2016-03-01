@@ -1,4 +1,4 @@
-all:
+all::
 
 ifeq ($(OS),Windows_NT)
 
@@ -53,16 +53,17 @@ include $(ZIMKPATH)$(PSEP)silent.mk
 include $(ZIMKPATH)$(PSEP)config.mk
 include $(ZIMKPATH)$(PSEP)objs.mk
 include $(ZIMKPATH)$(PSEP)bin.mk
+include $(ZIMKPATH)$(PSEP)lib.mk
 
-clean:
+clean::
 	$(RMF) $(CLEAN)
 
-distclean: 
+distclean::
 	$(RMFR) $(BINBASEDIR)
 	$(RMFR) $(LIBBASEDIR)
 	$(RMFR) $(OBJBASEDIR)
 
-strip: all
+strip:: all
 
 .PHONY: all strip clean distclean
 
