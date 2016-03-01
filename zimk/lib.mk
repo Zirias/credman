@@ -29,13 +29,21 @@ $$(_$(T)_SHARED): $$($(T)_SOBJS) $$($(T)_DEPS) | $$($(T)_TGTDIR) $$($(T)_BINDIR)
 
 else
 _$(T)_V:= $$($(T)_V_MAJ).$$($(T)_V_MIN).$$($(T)_V_REV)
-_$(T)_SHARED:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$(_$(T)_V)
+_$(T)_SHARED_FULL:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$(_$(T)_V)
+_$(T)_SHARED_MAJ:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$($(T)_V_MAJ)
+_$(T)_SHARED:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so
 
 $$(_$(T)_STATIC): $$($(T)_OBJS) $$($(T)_STATICDEPS) | $$($(T)_TGTDIR)
 	$$(VAR)
 	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@ $$^
 
-$$(_$(T)_SHARED): $$($(T)_SOBJS) $$($(T)_DEPS) | $$($(T)_TGTDIR)
+$$(_$(T)_SHARED): $$(_$(T)_SHARED_MAJ)
+	$$(VR)ln -fs lib$(T).so.$$($(T)_V_MAJ) $$@
+
+$$(_$(T)_SHARED_MAJ): $$(_$(T)_SHARED_FULL)
+	$$(VR)ln -fs lib$(T).so.$$(_$(T)_V) $$@
+
+$$(_$(T)_SHARED_FULL): $$($(T)_SOBJS) $$($(T)_DEPS) | $$($(T)_TGTDIR)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
 		-Wl,-soname,lib$(T).so.$$($(T)_V_MAJ) \

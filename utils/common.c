@@ -33,6 +33,7 @@ xrealloc(void *ptr, size_t size)
 char *
 copyString(const char *orig)
 {
+    if (!orig) return 0;
     char *copy = xmalloc(strlen(orig) + 1);
     strcpy(copy, orig);
     return copy;

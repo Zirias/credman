@@ -1,7 +1,7 @@
 #include <utils/logger.h>
 #include <utils/stringbuilder.h>
 
-static Logger _log = LOGGER("Utils.Test_1");
+static Logger _log = LOGGER("Tests.Test_1");
 
 int
 main(void)

@@ -8,6 +8,5 @@ test_1_LIBS:= -lcmutils
 test_1_DEPS:= $(LIBDIR)$(PSEP)libcmutils.a
 test_1_BUILDWITH:= tests
 test_t_STRIPWITH:=
-
 $(eval $(BINRULES))
 
