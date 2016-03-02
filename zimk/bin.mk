@@ -13,6 +13,8 @@ $$($(T)_TGTDIR)::
 
 endif
 
+$(LINKFLAGS)
+
 ifneq ($$(strip $$($(T)_BUILDWITH)),)
 $$($(T)_BUILDWITH):: $$($(T)_TGTDIR)$$(PSEP)$$($(T)_TARGET)$$(EXE)
 
@@ -31,7 +33,7 @@ $$($(T)_TGTDIR)$$(PSEP)$$($(T)_TARGET): $$($(T)_OBJS) $$($(T)_DEPS) \
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
 		$$($(T)_$$(PLATFORM)_LDFLAGS) $$($(T)_LDFLAGS) $$(LDFLAGS) \
-		$$($(T)_OBJS) $$($(T)_$$(PLATFORM)_LIBS) $$($(T)_LIBS)
+		$$($(T)_OBJS) $$(_$(T)_LINK)
 
 endef
 

@@ -49,9 +49,11 @@ endif
 
 ZIMKPATH:=$(subst .mk,,$(lastword $(MAKEFILE_LIST)))
 
+-include defaults.mk
 include $(ZIMKPATH)$(PSEP)silent.mk
 include $(ZIMKPATH)$(PSEP)config.mk
 include $(ZIMKPATH)$(PSEP)objs.mk
+include $(ZIMKPATH)$(PSEP)link.mk
 include $(ZIMKPATH)$(PSEP)bin.mk
 include $(ZIMKPATH)$(PSEP)lib.mk
 
@@ -59,12 +61,13 @@ clean::
 	$(RMF) $(CLEAN)
 
 distclean::
+	$(RMF) conf_*.mk
 	$(RMFR) $(BINBASEDIR)
 	$(RMFR) $(LIBBASEDIR)
 	$(RMFR) $(OBJBASEDIR)
 
 strip:: all
 
-.PHONY: all strip clean distclean
+.PHONY: all staticlibs strip clean distclean
 
 # vim: noet:si:ts=8:sts=8:sw=8

@@ -9,9 +9,12 @@ $(T)_TGTDIR ?= $$(LIBDIR)
 $(T)_BINDIR ?= $$(BINDIR)
 $(T)_CFLAGS_SHARED ?= $$($(T)_CFLAGS) -fPIC
 $(T)_BUILDWITH ?= all
+$(T)_BUILDSTATICWITH ?= staticlibs
 $(T)_STRIPWITH ?= strip
 
 _$(T)_STATIC:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).a
+
+$(LINKFLAGS)
 
 ifeq ($$(PLATFORM),win32)
 _$(T)_SHARED:= $$($(T)_BINDIR)$$(PSEP)$(T)-$$($(T)_V_MAJ).dll
@@ -25,7 +28,7 @@ $$(_$(T)_SHARED): $$($(T)_SOBJS) $$($(T)_DEPS) | $$($(T)_TGTDIR) $$($(T)_BINDIR)
 		-Wl,--output-def,$$($(T)_TGTDIR)$$(PSEP)$(T).def \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
 		$$($(T)_$$(PLATFORM)_LDFLAGS) $$($(T)_LDFLAGS) $$(LDFLAGS) \
-		$$($(T)_SOBJS) $$($(T)_$$(PLATFORM)_LIBS) $$($(T)_LIBS)
+		$$($(T)_SOBJS) $$(_$(T)_LINK)
 
 else
 _$(T)_V:= $$($(T)_V_MAJ).$$($(T)_V_MIN).$$($(T)_V_REV)
@@ -49,7 +52,7 @@ $$(_$(T)_SHARED_FULL): $$($(T)_SOBJS) $$($(T)_DEPS) | $$($(T)_TGTDIR)
 		-Wl,-soname,lib$(T).so.$$($(T)_V_MAJ) \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
 		$$($(T)_$$(PLATFORM)_LDFLAGS) $$($(T)_LDFLAGS) $$(LDFLAGS) \
-		$$($(T)_SOBJS) $$($(T)_$$(PLATFORM)_LIBS) $$($(T)_LIBS)
+		$$($(T)_SOBJS) $$(_$(T)_LINK)
 
 endif
 

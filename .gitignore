@@ -1,3 +1,4 @@
+defaults.mk
 conf_*.mk
 .*.swp
 .*.pyc
