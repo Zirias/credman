@@ -1,5 +1,8 @@
 define OBJRULES
 
+_CUSTOM_MAKEFILES = $$(filter-out zimk%, \
+		    $$(filter-out %.d, $$(MAKEFILE_LIST)))
+
 $(T)_OBJDIR ?= $$(OBJDIR)$$(PSEP)$$($(T)_SRCDIR)
 
 $(T)_SOURCES := $$(addprefix $$($(T)_SRCDIR)$$(PSEP), \
@@ -26,7 +29,7 @@ $(T)_OBJS := $$(addprefix $$($(T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix .ro,$$($(T)_win32_RES)))
 
 $$($(T)_OBJDIR)$$(PSEP)%.ro: $$($(T)_SRCDIR)$$(PSEP)%.rc \
-    Makefile $$(CONFIG) | $$($(T)_OBJDIR)
+    $$(_CUSTOM_MAKEFILES) | $$($(T)_OBJDIR)
 	$$(VRES)
 	$$(VR)$$(CROSS_COMPILE)windres $$^ $$@
 
@@ -36,17 +39,15 @@ endif
 CLEAN += $$($(T)_OBJS:.o=.d) $$($(T)_OBJS)
 
 ifneq ($$(strip $$($(T)_OBJDIR)),$$(strip $$($(T)_SRCDIR)))
-$$($(T)_OBJDIR)::
-	$$(VMD)
-	$$(VR)$$(MDP) $$(addprefix $$($(T)_OBJDIR)$$(PSEP), \
-	    $$(dir $$($(T)_MODULES))) 
+_OBJDIRS_+=$$($(T)_OBJDIR)
+$$($(T)_OBJDIR): $$(OBJDIR)$$(PSEP).objdirs
 
 endif
 
 %.o: %.c
 
 $$($(T)_OBJDIR)$$(PSEP)%.d: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	Makefile $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) | $$($(T)_OBJDIR)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
@@ -61,7 +62,7 @@ endif
 endif
 
 $$($(T)_OBJDIR)$$(PSEP)%.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	Makefile $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) | $$($(T)_OBJDIR)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
@@ -70,7 +71,7 @@ $$($(T)_OBJDIR)$$(PSEP)%.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
 		$$<
 
 $$($(T)_OBJDIR)$$(PSEP)%_s.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	Makefile $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) | $$($(T)_OBJDIR)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(T)_CFLAGS_SHARED) \
@@ -80,5 +81,9 @@ $$($(T)_OBJDIR)$$(PSEP)%_s.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
 		$$<
 
 endef
+
+$(OBJDIR)$(PSEP).objdirs:
+	$(VR)$(MDP) $(sort $(OBJDIR) $(_OBJDIRS_))
+	$(VR)$(STAMP) $@
 
 # vim: noet:si:ts=8:sts=8:sw=8

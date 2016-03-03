@@ -3,6 +3,7 @@ P:= model
 T:= cmmodel
 cmmodel_SRCDIR:= $(P)
 cmmodel_MODULES:= cred
+cmmodel_DEPS:= cmutils
 cmmodel_LIBS:= cmutils
 cmmodel_V_MAJ:= 0
 cmmodel_V_MIN:= 0

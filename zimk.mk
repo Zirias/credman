@@ -11,6 +11,8 @@ CPF := copy /y
 RMF := del /f /q
 RMFR := -rd /s /q
 MDP := -md
+MV := ren
+STAMP := copy /y NUL
 XIF := if exist
 XTHEN := (
 XFI := )
@@ -33,6 +35,8 @@ CPF := cp -f
 RMF := rm -f
 RMFR := rm -fr
 MDP := mkdir -p
+MV := mv
+STAMP := touch
 XIF := if [ -x
 XTHEN := ]; then
 XFI := ; fi
@@ -53,6 +57,7 @@ ZIMKPATH:=$(subst .mk,,$(lastword $(MAKEFILE_LIST)))
 include $(ZIMKPATH)$(PSEP)silent.mk
 include $(ZIMKPATH)$(PSEP)config.mk
 include $(ZIMKPATH)$(PSEP)objs.mk
+include $(ZIMKPATH)$(PSEP)deps.mk
 include $(ZIMKPATH)$(PSEP)link.mk
 include $(ZIMKPATH)$(PSEP)bin.mk
 include $(ZIMKPATH)$(PSEP)lib.mk
