@@ -12,17 +12,29 @@ $(T)_BUILDWITH ?= all
 $(T)_BUILDSTATICWITH ?= staticlibs
 $(T)_STRIPWITH ?= strip
 
-$(T)_STATICLIB:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).a
+$(T)_STATICLIB := $$($(T)_TGTDIR)$$(PSEP)lib$(T).a
 
 $(BUILDDEPS)
 $(LINKFLAGS)
 
 ifeq ($$(PLATFORM),win32)
-$(T)_LIB:= $$($(T)_BINDIR)$$(PSEP)$(T)-$$($(T)_V_MAJ).dll
+$(T)_LIB := $$($(T)_BINDIR)$$(PSEP)$(T)-$$($(T)_V_MAJ).dll
 
+else
+_$(T)_V := $$($(T)_V_MAJ).$$($(T)_V_MIN).$$($(T)_V_REV)
+_$(T)_LIB_FULL := $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$(_$(T)_V)
+_$(T)_LIB_MAJ := $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$($(T)_V_MAJ)
+$(T)_LIB := $$($(T)_TGTDIR)$$(PSEP)lib$(T).so
+
+endif
+
+OUTFILES := $$($(T)_LIB) $$($(T)_STATICLIB)
+$(DIRRULES)
+
+ifeq ($$(PLATFORM),win32)
 $$($(T)_STATICLIB): $$($(T)_LIB)
 
-$$($(T)_LIB): $$($(T)_SOBJS) $$(_$(T)_DEPS) | $$($(T)_TGTDIR) $$($(T)_BINDIR)
+$$($(T)_LIB): $$($(T)_SOBJS) $$(_$(T)_DEPS) | $$(_$(T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
 		-Wl,--out-implib,$$($(T)_TGTDIR)$$(PSEP)lib$(T).a \
@@ -32,12 +44,7 @@ $$($(T)_LIB): $$($(T)_SOBJS) $$(_$(T)_DEPS) | $$($(T)_TGTDIR) $$($(T)_BINDIR)
 		$$($(T)_SOBJS) $$(_$(T)_LINK)
 
 else
-_$(T)_V:= $$($(T)_V_MAJ).$$($(T)_V_MIN).$$($(T)_V_REV)
-_$(T)_LIB_FULL:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$(_$(T)_V)
-_$(T)_LIB_MAJ:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so.$$($(T)_V_MAJ)
-$(T)_LIB:= $$($(T)_TGTDIR)$$(PSEP)lib$(T).so
-
-$$($(T)_STATICLIB): $$($(T)_OBJS) | $$($(T)_TGTDIR)
+$$($(T)_STATICLIB): $$($(T)_OBJS) | $$(_$(T)_DIRS)
 	$$(VAR)
 	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@1 $$^
 	$$(VR)$$(RMF) $$@
@@ -49,7 +56,7 @@ $$($(T)_LIB): $$(_$(T)_LIB_MAJ)
 $$(_$(T)_LIB_MAJ): $$(_$(T)_LIB_FULL)
 	$$(VR)ln -fs lib$(T).so.$$(_$(T)_V) $$@
 
-$$(_$(T)_LIB_FULL): $$($(T)_SOBJS) $$(_$(T)_DEPS) | $$($(T)_TGTDIR)
+$$(_$(T)_LIB_FULL): $$($(T)_SOBJS) $$(_$(T)_DEPS) | $$(_$(T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
 		-Wl,-soname,lib$(T).so.$$($(T)_V_MAJ) \
@@ -64,18 +71,6 @@ $(T): $$($(T)_LIB)
 static_$(T): $$($(T)_STATICLIB)
 
 .PHONY: $(T) static_$(T)
-
-ifneq ($$(strip $$($(T)_TGTDIR)),$$(strip $$($(T)_SRCDIR)))
-_LIBDIRS_+=$$($(T)_TGTDIR)
-$$($(T)_TGTDIR): $$(LIBDIR)$$(PSEP).libdirs
-
-endif
-
-ifneq ($$(strip $$($(T)_BINDIR)),$$(strip $$($(T)_SRCDIR)))
-_BINDIRS_+=$$($(T)_BINDIR)
-$$($(T)_BINDIR): $$(OBJDIR)$$(PSEP).objdirs
-
-endif
 
 ifneq ($$(strip $$($(T)_BUILDWITH)),)
 $$($(T)_BUILDWITH):: $$($(T)_LIB)
@@ -103,9 +98,5 @@ endif
 endif
 
 endef
-
-$(LIBDIR)$(PSEP).libdirs:
-	$(VR)$(MDP) $(sort $(LIBDIR) $(_LIBDIRS_))
-	$(VR)$(STAMP) $@
 
 # vim: noet:si:ts=8:sts=8:sw=8

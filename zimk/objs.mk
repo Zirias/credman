@@ -25,31 +25,22 @@ endif
 
 ifeq ($$(PLATFORM),win32)
 ifneq ($$(strip $$($(T)_win32_RES)),)
-$(T)_SOURCES := $$(addprefix $$($(T)_SRCDIR)$$(PSEP), \
+$(T)_SOURCES += $$(addprefix $$($(T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .rc,$$($(T)_win32_RES)))
-$(T)_OBJS := $$(addprefix $$($(T)_OBJDIR)$$(PSEP), \
+$(T)_OBJS += $$(addprefix $$($(T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix .ro,$$($(T)_win32_RES)))
-
-$$($(T)_OBJDIR)$$(PSEP)%.ro: $$($(T)_SRCDIR)$$(PSEP)%.rc \
-    $$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$($(T)_OBJDIR)
-	$$(VRES)
-	$$(VR)$$(CROSS_COMPILE)windres $$< $$@
-
 endif
 endif
 
 CLEAN += $$($(T)_OBJS:.o=.d) $$($(T)_OBJS)
 
-ifneq ($$(strip $$($(T)_OBJDIR)),$$(strip $$($(T)_SRCDIR)))
-_OBJDIRS_+=$$($(T)_OBJDIR)
-$$($(T)_OBJDIR): $$(OBJDIR)$$(PSEP).objdirs
-
-endif
+OUTFILES := $$($(T)_OBJS)
+$(DIRRULES)
 
 %.o: %.c
 
 $$($(T)_OBJDIR)$$(PSEP)%.d: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$(_$(T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
@@ -63,8 +54,16 @@ ifneq ($$(MAKECMDGOALS),distclean)
 endif
 endif
 
+ifeq ($$(PLATFORM),win32)
+$$($(T)_OBJDIR)$$(PSEP)%.ro: $$($(T)_SRCDIR)$$(PSEP)%.rc \
+    $$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$(_$(T)_DIRS)
+	$$(VRES)
+	$$(VR)$$(CROSS_COMPILE)windres $$< $$@
+
+endif
+
 $$($(T)_OBJDIR)$$(PSEP)%.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$(_$(T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
@@ -73,7 +72,7 @@ $$($(T)_OBJDIR)$$(PSEP)%.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
 		$$<
 
 $$($(T)_OBJDIR)$$(PSEP)%_s.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$($(T)_OBJDIR)
+	$$(_CUSTOM_MAKEFILES) $$(CONFIG) | $$(_$(T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(T)_CFLAGS_SHARED) \
@@ -83,9 +82,5 @@ $$($(T)_OBJDIR)$$(PSEP)%_s.o: $$($(T)_SRCDIR)$$(PSEP)%.c \
 		$$<
 
 endef
-
-$(OBJDIR)$(PSEP).objdirs:
-	$(VR)$(MDP) $(sort $(OBJDIR) $(_OBJDIRS_))
-	$(VR)$(STAMP) $@
 
 # vim: noet:si:ts=8:sts=8:sw=8

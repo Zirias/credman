@@ -57,6 +57,7 @@ ZIMKPATH:=$(subst .mk,,$(lastword $(MAKEFILE_LIST)))
 include $(ZIMKPATH)$(PSEP)silent.mk
 include $(ZIMKPATH)$(PSEP)config.mk
 include $(ZIMKPATH)$(PSEP)objs.mk
+include $(ZIMKPATH)$(PSEP)dirs.mk
 include $(ZIMKPATH)$(PSEP)deps.mk
 include $(ZIMKPATH)$(PSEP)link.mk
 include $(ZIMKPATH)$(PSEP)bin.mk

@@ -6,12 +6,6 @@ $(T)_TGTDIR ?= $$(BINDIR)
 $(T)_BUILDWITH ?= all
 $(T)_STRIPWITH ?= strip
 
-ifneq ($$(strip $$($(T)_TGTDIR)),$$(strip $$($(T)_SRCDIR)))
-_BINDIRS_+=$$($(T)_TGTDIR)
-$$($(T)_TGTDIR): $$(BINDIR)$$(PSEP).bindirs
-
-endif
-
 $(BUILDDEPS)
 $(LINKFLAGS)
 
@@ -20,6 +14,9 @@ $(T)_EXE := $$($(T)_TGTDIR)$$(PSEP)$$($(T)_TARGET)$$(EXE)
 $(T): $$($(T)_EXE)
 
 .PHONY: $(T)
+
+OUTFILES := $$($(T)_EXE)
+$(DIRRULES)
 
 ifneq ($$(strip $$($(T)_BUILDWITH)),)
 $$($(T)_BUILDWITH):: $$($(T)_EXE)
@@ -33,8 +30,7 @@ $$($(T)_STRIPWITH):: $$($(T)_EXE)
 
 endif
 
-$$($(T)_EXE): $$($(T)_OBJS) $$(_$(T)_DEPS) \
-	| $$($(T)_TGTDIR)
+$$($(T)_EXE): $$($(T)_OBJS) $$(_$(T)_DEPS) | $$(_$(T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
 		$$($(T)_$$(PLATFORM)_CFLAGS) $$($(T)_CFLAGS) $$(CFLAGS) \
@@ -42,9 +38,5 @@ $$($(T)_EXE): $$($(T)_OBJS) $$(_$(T)_DEPS) \
 		$$($(T)_OBJS) $$(_$(T)_LINK)
 
 endef
-
-$(BINDIR)$(PSEP).bindirs:
-	$(VR)$(MDP) $(sort $(BINDIR) $(_BINDIRS_))
-	$(VR)$(STAMP) $@
 
 # vim: noet:si:ts=8:sts=8:sw=8
