@@ -6,7 +6,7 @@ test_1_MODULES:= test_1
 test_1_STATICLIBS:= cmutils
 test_1_STATICDEPS:= cmutils
 test_1_BUILDWITH:= tests
-test_t_STRIPWITH:=
+test_1_STRIPWITH:=
 $(eval $(BINRULES))
 
 T:=test_2
